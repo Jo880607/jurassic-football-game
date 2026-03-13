@@ -1,100 +1,59 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
+  userId: { 
+    type: String, 
+    required: true, 
     unique: true,
-    lowercase: true
+    default: () => new mongoose.Types.ObjectId().toString()
   },
-  password: {
-    type: String,
-    required: function() { return !this.socialId; } // 소셜로그인시 비밀번호 불필요
-  },
-  nickname: {
-    type: String,
-    required: true,
-    maxlength: 20
-  },
-  level: {
-    type: Number,
-    default: 1
-  },
-  exp: {
-    type: Number,
-    default: 0
-  },
-  coins: {
-    type: Number,
-    default: 1000
-  },
-  diamonds: {
-    type: Number,
-    default: 100
-  },
-  rankPoints: {
-    type: Number,
-    default: 1000
-  },
-  currentRank: {
-    type: String,
-    enum: ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master'],
-    default: 'Bronze'
-  },
-  // 소셜 로그인
-  socialId: String,
-  socialProvider: {
-    type: String,
-    enum: ['google', 'apple']
-  },
+  email: { type: String, required: true, unique: true },
+  nickname: { type: String, required: true, maxLength: 20 },
+  profileImage: { type: String, default: '' },
+  
+  // 게임 진행도
+  level: { type: Number, default: 1, min: 1, max: 100 },
+  exp: { type: Number, default: 0, min: 0 },
+  
+  // 재화
+  pumpkinCoin: { type: Number, default: 500, min: 0 }, // 유료재화
+  goldCoin: { type: Number, default: 1000, min: 0 },   // 무료재화
+  
   // 뽑기 천장 시스템
   gachaPity: {
-    normalCount: { type: Number, default: 0 },
-    premiumCount: { type: Number, default: 0 },
-    legendaryCount: { type: Number, default: 0 }
+    normal: { type: Number, default: 0, max: 10 },     // 일반뽑기 천장
+    premium: { type: Number, default: 0, max: 90 },    // 프리미엄뽑기 천장
+    lastLegendaryAt: { type: Date, default: null }
   },
-  // 일일 미션
-  dailyMissions: [{
-    missionId: String,
-    completed: { type: Boolean, default: false },
-    progress: { type: Number, default: 0 },
-    resetAt: Date
-  }],
-  // 계정 설정
+  
+  // 랭킹 정보
+  battleRating: { type: Number, default: 1000 },
+  league: { 
+    type: String, 
+    enum: ['BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND'], 
+    default: 'BRONZE' 
+  },
+  
+  // 계정 상태
+  isActive: { type: Boolean, default: true },
+  isBanned: { type: Boolean, default: false },
+  banReason: { type: String, default: '' },
+  lastLoginAt: { type: Date, default: Date.now },
+  
+  // 설정
   settings: {
     soundEnabled: { type: Boolean, default: true },
     notificationEnabled: { type: Boolean, default: true },
-    language: { type: String, default: 'ko' }
-  },
-  lastLoginAt: { type: Date, default: Date.now },
-  isActive: { type: Boolean, default: true }
+    language: { type: String, enum: ['ko', 'en', 'ja'], default: 'ko' }
+  }
 }, {
   timestamps: true,
   versionKey: false
 });
 
-// 비밀번호 해시화
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
-});
-
-// 비밀번호 검증 메소드
-userSchema.methods.comparePassword = async function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
-
-// 레벨업 체크 메소드
-userSchema.methods.checkLevelUp = function() {
-  const requiredExp = this.level * 100; // 레벨당 100 경험치 필요
-  if (this.exp >= requiredExp) {
-    this.level += 1;
-    this.exp -= requiredExp;
-    return true;
-  }
-  return false;
-};
+// 인덱스 설정
+userSchema.index({ email: 1 });
+userSchema.index({ battleRating: -1 });
+userSchema.index({ league: 1, battleRating: -1 });
 
 module.exports = mongoose.model('User', userSchema);
