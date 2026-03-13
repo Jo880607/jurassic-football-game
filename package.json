@@ -1,0 +1,13 @@
+### 기술스택
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS + Framer Motion
+- **State**: Zustand + React Query
+- **PWA**: next-pwa
+- **Animation**: Framer Motion + Lottie
+- **Sound**: Howler.js
+- **Testing**: Jest + RTL
+- **Storybook**: UI 컴포넌트 문서화
+
+## 📦 2. 패키지 설정
+
+`package.json`
