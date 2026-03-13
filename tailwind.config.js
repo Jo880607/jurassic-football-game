@@ -1,72 +1,52 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
-        // 치치의 브랜딩 컬러 적용
-        primary: {
-          50: '#FFF7ED',
-          100: '#FFEDD5',
-          500: '#FF8C00', // 호박색 메인
-          600: '#EA580C',
-          700: '#C2410C',
-          900: '#9A3412',
+        // 쥬라기 풋볼 브랜드 컬러
+        jurassic: {
+          50: '#f0f9e8',
+          100: '#ddf2c7',
+          500: '#2D5016', // Primary Green
+          600: '#1f3b0f',
+          900: '#0d1506',
         },
-        secondary: {
-          sunset: '#FF6B35',
-          golden: '#FFD700',
-          jungle: '#228B22',
-          sky: '#87CEEB',
-          brown: '#8B4513',
+        amber: {
+          400: '#FFD700', // 호박 골드
+          500: '#f59e0b',
         },
-        game: {
-          common: '#94A3B8',
-          uncommon: '#22C55E',
-          rare: '#3B82F6',
-          epic: '#8B5CF6',
-          legendary: '#F59E0B',
+        volcanic: {
+          500: '#FF6B35', // 화산 오렌지
+        },
+        fossil: {
+          400: '#8B7355', // 화석 그레이
+          500: '#6b5b47',
         }
       },
       fontFamily: {
-        'game': ['Nunito', 'sans-serif'],
-        'korean': ['Noto Sans KR', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Orbitron', 'monospace'], // 게임 타이틀용
       },
       animation: {
-        'bounce-slow': 'bounce 2s infinite',
-        'pulse-slow': 'pulse 3s infinite',
-        'wiggle': 'wiggle 1s ease-in-out infinite',
-        'card-flip': 'cardFlip 0.8s ease-in-out',
-        'slide-up': 'slideUp 0.5s ease-out',
+        'bounce-slow': 'bounce 3s infinite',
+        'pulse-fast': 'pulse 1s infinite',
+        'card-flip': 'cardFlip 0.6s ease-in-out',
+        'shake': 'shake 0.5s ease-in-out',
       },
       keyframes: {
-        wiggle: {
-          '0%, 100%': { transform: 'rotate(-3deg)' },
-          '50%': { transform: 'rotate(3deg)' },
-        },
         cardFlip: {
-          '0%': { transform: 'rotateY(0deg)' },
-          '50%': { transform: 'rotateY(90deg)' },
-          '100%': { transform: 'rotateY(0deg)' },
+          '0%': { transform: 'perspective(1000px) rotateY(0deg)' },
+          '50%': { transform: 'perspective(1000px) rotateY(-90deg)' },
+          '100%': { transform: 'perspective(1000px) rotateY(0deg)' },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(100%)', opacity: '0' },
-          '100%': { transform: 'translateY(0%)', opacity: '1' },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-4px)' },
+          '20%, 40%, 60%, 80%': { transform: 'translateX(4px)' },
         }
-      },
-      screens: {
-        'xs': '475px',
-      },
-      spacing: {
-        'safe-top': 'env(safe-area-inset-top)',
-        'safe-bottom': 'env(safe-area-inset-bottom)',
       }
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/aspect-ratio'),
-  ],
+  plugins: [],
 }
